@@ -58,26 +58,38 @@ public class CarrinhoResource {
 		return Response.ok().build();
 	}
 	
-	/**path anterior
-	put para alterar um recurso
-	alteraproduto passando os mesmo parametros anteriores
-	Busca o carrionho com o id
-	Receber o conteudo XML do Produto no parametro do metodo
-	transoformar o conteudo do produto fromxml
-	pegar o carrinho e chamar o metodo troca para trocar produto
-	testar com o curl
-	
-	alterar a URI do path acrecentando a quantidade
-	altera carrinho para metodo trocaQuantidade que vai so trocar a quantidade do produto.
-	*/
+	/**
+	 * Altera um recurso passando os parametros id do carrinho e id do produto e em
+	 * seguida busca o carrinho, recebe o conteudo XML do Produto no parametro do
+	 * metodo para transoformar o conteudo do produto fromxml, pegar o carrinho e
+	 * chamar o metodo troca para trocar produto
+	 */
 	
 	@Path("{id}/produtos/{produtoId}")
 	@PUT
-	@Consumes
+	@Consumes(MediaType.APPLICATION_XML)
 	public Response alteraProduto(String conteudo, @PathParam("id") long id, @PathParam("produtoId") long produtoId) {
 		Carrinho carrinho = new CarrinhoDAO().busca(id);
 		Produto produto = (Produto) new XStream().fromXML(conteudo);
 		carrinho.troca(produto );
+		return Response.ok().build();
+	}
+	
+	/**
+	 * 	alterar a URI do path acrecentando a quantidade e altera carrinho para metodo trocaQuantidade que vai so trocar a quantidade do produto.
+	 * @param conteudo
+	 * @param id
+	 * @param produtoId
+	 * @return
+	 */
+	
+	@Path("{id}/produtos/{produtoId}/quantidade") //http://localhost:8080/carrinhos/1/produtos/3467/20
+	@PUT
+	@Consumes(MediaType.APPLICATION_XML)
+	public Response alteraQuantidadeProduto(String conteudo, @PathParam("id") long id, @PathParam("produtoId") long produtoId ) {
+		Carrinho carrinho = new CarrinhoDAO().busca(id);
+		Produto produto = (Produto) new XStream().fromXML(conteudo);
+		carrinho.trocaQuantidade(produto);
 		return Response.ok().build();
 	}
 
