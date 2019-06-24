@@ -21,19 +21,17 @@ import br.com.alura.loja.modelo.Projeto;
 public class ProjetoResource {
 
 	@GET
-	@Produces(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_XML)
 	@Path("{id}")
-	public String busca(@PathParam("id") long id) {
+	public Projeto busca(@PathParam("id") long id) {
 		Projeto projeto = new ProjetoDAO().busca(id);
-		return projeto.toJson();
+		return projeto;
 	}
 	
 	@POST
 	@Consumes(MediaType.APPLICATION_XML)
-	public Response adiciona(String conteudo) {
-		Projeto projeto = (Projeto) new XStream().fromXML(conteudo);
+	public Response adiciona(Projeto projeto) {
 		new ProjetoDAO().adiciona(projeto);
-		
 		URI uri = URI.create("/projetos/" + projeto.getId());
 		return Response.created(uri ).build();
 	}

@@ -44,30 +44,22 @@ public class ClienteTest {
 
 	@Test
 	public void testaQueBuscarUmCarrinhoTrazOCarrinhoEsperado() {
-
-		// URI especifica do endpoint, ou path, que pega os dados do servidor e devolve
-		// a resposta em string.
-		String conteudo = target.path("/carrinhos/1").request().get(String.class);
-		Carrinho carrinho = (Carrinho) new XStream().fromXML(conteudo);// desserealizar o XML para objeto
+		Carrinho carrinho = target.path("/carrinhos/1").request().get(Carrinho.class);
 		Assert.assertEquals("Rua Vergueiro 3185, 8 andar", carrinho.getRua());
-
 	}
 
 	@Test
 	public void testaQueSuportaNovosCarrinhos() {
-		Client client = ClientBuilder.newClient();
-		WebTarget target = client.target("http://localhost:8080");
 
 		Carrinho carrinho = new Carrinho();
 		carrinho.adiciona(new Produto(314L, "Tablet", 999, 1));
 		carrinho.setRua("Rua Vergueiro");
 		carrinho.setCidade("São Paulo");
-		String xml = carrinho.toXML();
 
 		/**
 		 * Cria a representacao do recurso: o conteudo e o media type
 		 */
-		Entity<String> entity = Entity.entity(xml, MediaType.APPLICATION_XML);
+		Entity<Carrinho> entity = Entity.entity(carrinho, MediaType.APPLICATION_XML);
 		Response response = target.path("/carrinhos").request().post(entity);
 
 		Assert.assertEquals(201, response.getStatus());
